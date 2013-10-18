@@ -52,6 +52,10 @@ phys_tgt_id
 hum_tgt_name
 hum_tgt_description
 incident_instrument_id
+incident_type
+perp_incident_category
+incident_date
+incident_location
 """.split()
 
 KEY_WHITELIST = set(KEY_WHITELIST)

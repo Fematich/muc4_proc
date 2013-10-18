@@ -21,12 +21,12 @@ function compose_html() {
 }
 
 
-cat data/TASK/CORPORA/dev/key-dev-*     | python scripts/proc_keys.py --format sidebyside 1>out.html 2>err.log
+cat ~/work/muc34/TASK/CORPORA/dev/key-dev-*     | python scripts/proc_keys.py --format sidebyside 1>out.html 2>err.log
 compose_html dev out.html err.log
 
-cat data/TASK/CORPORA/testsets/key-tst* | python scripts/proc_keys.py --format sidebyside 1>out.html 2>err.log
+cat ~/work/muc34/TASK/CORPORA/testsets/key-tst* | python scripts/proc_keys.py --format sidebyside 1>out.html 2>err.log
 compose_html tst out.html err.log
 
-cat data/TASK/CORPORA/dev/key-dev-*     | python scripts/proc_keys.py > proc_output/keys_dev.jsons.txt
-cat data/TASK/CORPORA/testsets/key-tst* | python scripts/proc_keys.py > proc_output/keys_tst.jsons.txt
+cat ~/work/muc34/TASK/CORPORA/dev/key-dev-*     | python scripts/proc_keys.py > proc_output/keys_dev.jsons.txt
+cat ~/work/muc34/TASK/CORPORA/testsets/key-tst* | python scripts/proc_keys.py > proc_output/keys_tst.jsons.txt
 
