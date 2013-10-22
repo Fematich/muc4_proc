@@ -8,6 +8,7 @@ for unit tests (http://pytest.org/)
 import sys,re
 import json
 from pprint import pprint
+import cPickle as pickle
 
 def cleankey(keystr):
     return re.sub(r'[^A-Z]+', '_', keystr).strip('_').lower()
@@ -55,7 +56,6 @@ incident_instrument_id
 incident_type
 perp_incident_category
 incident_date
-incident_location
 """.split()
 
 KEY_WHITELIST = set(KEY_WHITELIST)
@@ -199,53 +199,29 @@ def test_parse_one_value():
     assert d['strings_lhs'] == ["U.S. JOURNALIST"]
     assert d['strings_rhs'] == ["BERNARDETTE PARDO"]
 
-def fancy_json_print(keyvals):
-    lines = [ json.dumps(kv, sort_keys=True) for kv in keyvals ]
-    s = ""
-    s += "[\n  "
-    s += ",\n  ".join(lines)
-    s += "\n]"
-    return s
-
 if __name__=='__main__':
-
-    import argparse
-    p = argparse.ArgumentParser()
-    p.add_argument('--format', default='jsonpp', choices=['jsonpp','sidebyside'])
-    args = p.parse_args()
-
-    if args.format=='sidebyside':
-        print """
-            <style> pre { white-space: pre-wrap; } </style>
-        """        
-        print "<table cellpadding=3 border=1 cellspacing=0 width='100%'>"
-        
-
     data = sys.stdin.read()
     lines = data.split('\n')
     lines = [L for L in lines if not re.search(r'^\s*;', L)] ## comments
     data = '\n'.join(lines)
     chunks = re.split(r'\n\n+|\n(?=0\. )', data)
     chunks = [c.strip() for c in chunks if c.strip()]
-
+    keydict={}
+    
     for chunk in chunks:
-        #print "==="; print chunk
-
         keyvals1 = list(yield_keyvals(chunk))
         assert all(k in ALL_KEYS or k=='comment' for k,v in keyvals1)
         cur_docid = clean_docid(dict(keyvals1)['message_id'])
-        #print "===", cur_docid
-        #print "--- raw key/val pairs"; pprint(keyvals1); print
+        cur_templid= clean_docid(dict(keyvals1)['message_template'])
+        if cur_templid!='*':
+            keyvals2 = list(parse_values(keyvals1))        
+            try:
+                keydict[cur_docid].append((cur_templid,dict(keyvals2)))
+            except KeyError:
+                keydict[cur_docid]=[(cur_templid,dict(keyvals2))]
+#        else:
+#            keydict[cur_docid]=[]
+    pickle.dump(keydict,open('keys.pkl','a+'))
+       
 
-        keyvals2 = list(parse_values(keyvals1))
-        #print "--- parsed values"; pprint(keyvals2); print
-
-        if args.format == 'jsonpp':
-            print "%%%"
-            print fancy_json_print(keyvals2)
-
-        elif args.format == 'sidebyside':
-            print "<tr><td><pre>{chunk}</pre> <td><pre>{json}</pre>".format(chunk=chunk, json=fancy_json_print(keyvals2))
-
-        else: assert False
 
