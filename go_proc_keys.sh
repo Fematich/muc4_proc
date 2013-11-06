@@ -21,8 +21,8 @@ function compose_html() {
 }
 
 
-cat ~/work/muc34/TASK/CORPORA/dev/key-dev-*     | python scripts/proc_keys.py
+#cat ~/work/data/muc34/TASK/CORPORA/dev/key-dev-*     | python scripts/proc_keys.py
 
-cat ~/work/muc34/TASK/CORPORA/tst*/key-tst* | python scripts/proc_keys.py
+cat ~/work/data/muc34/TASK/CORPORA/tst*/key-tst* | python scripts/proc_keys.py
 
 

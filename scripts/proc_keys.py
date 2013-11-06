@@ -221,7 +221,7 @@ if __name__=='__main__':
                 keydict[cur_docid]=[(cur_templid,dict(keyvals2))]
 #        else:
 #            keydict[cur_docid]=[]
-    pickle.dump(keydict,open('keys.pkl','a+'))
+    pickle.dump(keydict,open('keys.pkl','w'))
        
 
 
